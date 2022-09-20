@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.SqlServer;
 using PlatformService.Data;
 using PlatformService.SyncDataServies.Http;
 
@@ -11,13 +12,15 @@ builder.Services.AddControllers();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddDbContext<AppDbContext>(opt => opt.UseInMemoryDatabase("InMem"));
+//in memory was builder.Services.AddDbContext<AppDbContext>(opt => opt.UseInMemoryDatabase("InMem")); //;Server=mssql=clusterip-srv,1433
+builder.Services.AddDbContext<AppDbContext>(opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("PlatformsConn")));
 builder.Services.AddScoped<IPlatformRepo, PlatformRepo>();
 builder.Services.AddHttpClient<ICommandDataClient, HttpCommandDataClient>();
 var app = builder.Build();
 //may cause errors and need to change later
 //ConfigurationManager configuration = builder.Configuration;
-PrepDb.PrepPopulation(app);
+
+PrepDb.PrepPopulation(app, app.Environment.IsProduction());
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -26,7 +29,7 @@ if (app.Environment.IsDevelopment())
 }
 
 
-//app.UseHttpsRedirection();
+//          app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
