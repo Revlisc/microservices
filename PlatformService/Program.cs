@@ -12,8 +12,8 @@ builder.Services.AddControllers();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-//in memory was builder.Services.AddDbContext<AppDbContext>(opt => opt.UseInMemoryDatabase("InMem")); //;Server=mssql=clusterip-srv,1433
-builder.Services.AddDbContext<AppDbContext>(opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("PlatformsConn")));
+builder.Services.AddDbContext<AppDbContext>(opt => opt.UseInMemoryDatabase("InMem")); 
+//builder.Services.AddDbContext<AppDbContext>(opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("PlatformsConn")));//;Server=mssql=clusterip-srv,1433
 builder.Services.AddScoped<IPlatformRepo, PlatformRepo>();
 builder.Services.AddHttpClient<ICommandDataClient, HttpCommandDataClient>();
 var app = builder.Build();
