@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.SqlServer;
 using PlatformService.Data;
 using PlatformService.SyncDataServies.Http;
+using PlatformService.AsyncDataServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,8 +14,9 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<AppDbContext>(opt => opt.UseInMemoryDatabase("InMem")); 
-//builder.Services.AddDbContext<AppDbContext>(opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("PlatformsConn")));//;Server=mssql=clusterip-srv,1433
+//builder.Services.AddDbContext<AppDbContext>(opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("PlatformsConn")));//;Server=mssql=clusterip-srv,1433AddSingleton
 builder.Services.AddScoped<IPlatformRepo, PlatformRepo>();
+builder.Services.AddSingleton<IMessageBusClient, MessageBusClient>();
 builder.Services.AddHttpClient<ICommandDataClient, HttpCommandDataClient>();
 var app = builder.Build();
 //may cause errors and need to change later
